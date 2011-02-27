@@ -1,6 +1,11 @@
 require 'test_helper'
 
 class SuperListTest < ActiveSupport::TestCase
+  test "SuperList keys" do
+    puts SuperList["Gender"].options.inspect
+    assert_equal SuperList["Gender"].keys, ["M","F"]
+  end
+
   test "only valid when included" do
     ## gender allow_blank => true
     assert Factory.build(:user).valid?
@@ -22,7 +27,7 @@ class SuperListTest < ActiveSupport::TestCase
   test "SuperList gender (use i18n, no default translation)" do
     u = Factory(:user, :gender1 => 'F')
     assert_equal u.gender1, "translation missing: en.Gender.F"
-    assert_equal u.gender1(:i18n_locale => 'new_locale'), "translation missing: new_locale.Gender.F"
+    assert_equal u.gender1(:locale => 'new_locale'), "translation missing: new_locale.Gender.F"
   end
 
   test "SuperList gender (use i18n wtih default translation)" do

@@ -29,6 +29,10 @@ class SuperList
       @values
     end
 
+    def keys
+      values.keys
+    end
+
     def options
       @options
     end
@@ -45,7 +49,7 @@ module SuperListActiveRecord
       data = SuperList[data]
       options = data.options.merge(options)
 
-      validates_inclusion_of original_column, { :in => data.values.keys }.merge(options)
+      validates_inclusion_of original_column, { :in => data.keys }.merge(options)
 
       define_method "#{column}" do |*opt|
         opt = opt[0].is_a?(Hash) ? opt[0] : {}
@@ -53,7 +57,7 @@ module SuperListActiveRecord
 
         key = attributes[column.to_s]
         if opt[:use_i18n]
-          I18n.t(key, :scope => opt[:i18n_scope], :default => opt[:i18n_default], :locale => opt[:i18n_locale])
+          I18n.t(key, :scope => opt[:i18n_scope], :default => opt[:i18n_default], :locale => opt[:locale])
         else
           data.values[key]
         end

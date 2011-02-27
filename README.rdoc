@@ -1,9 +1,28 @@
-= super_list
+= Super List  - https://github.com/jinzhu/super_list
 
-Description goes here.
+  ## in config/initializers/super_list.rb
+  SuperList.new("Gender", {"M" => "Man", "F" => "Female"}, :allow_blank => true, :use_i18n => false)
+
+  ## in app/models/user.rb
+  class User < ActiveRecord::Base
+    super_list :gender, 'Gender'
+    super_list :gender2, 'Gender', :use_i18n => true
+  end
+
+  User.new(:gender => 'NF').valid?                    => false
+  User.new(:gender => 'M').valid?                     => true
+  User.new(:gender => 'F').gender                     => 'Female'
+  User.new(:gender => 'F').original_gender            => 'F'
+
+  User.new(:gender2 => 'M').gender2                   => "translation missing: en.Gender.M"
+  User.new(:gender2 => 'M').gender2(:locale => "api") => "translation missing: api.Gender.M"
+
+  SuperList["Gender"].options                         => {:use_i18n=>true, :i18n_scope=>"Gender", :allow_blank=>true}
+  SuperList["Gender"].keys                            => ["M", "F"]
+
 
 == Contributing to super_list
- 
+
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
 * Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it
 * Fork the project
@@ -16,4 +35,3 @@ Description goes here.
 
 Copyright (c) 2011 Jinzhu. See LICENSE.txt for
 further details.
-
