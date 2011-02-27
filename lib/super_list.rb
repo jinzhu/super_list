@@ -25,12 +25,21 @@ class SuperList
       @values, @options = values, options
     end
 
-    def values
-      @values
+    def keys
+      @values.keys
     end
 
-    def keys
-      values.keys
+    def values(options={})
+      keys.map {|x| get_value(x, options) }
+    end
+
+    def get_value(key,options={})
+      options = @options.merge(options)
+      if options[:use_i18n]
+        I18n.t(key, :scope => options[:i18n_scope], :default => options[:i18n_default], :locale => options[:locale])
+      else
+        @values[key]
+      end
     end
 
     def options
@@ -55,12 +64,7 @@ module SuperListActiveRecord
         opt = opt[0].is_a?(Hash) ? opt[0] : {}
         opt = options.merge(opt)
 
-        key = attributes[column.to_s]
-        if opt[:use_i18n]
-          I18n.t(key, :scope => opt[:i18n_scope], :default => opt[:i18n_default], :locale => opt[:locale])
-        else
-          data.values[key]
-        end
+        data.get_value(attributes[column.to_s], opt)
       end
 
       define_method original_column do

@@ -2,8 +2,10 @@ require 'test_helper'
 
 class SuperListTest < ActiveSupport::TestCase
   test "SuperList keys" do
-    puts SuperList["Gender"].options.inspect
     assert_equal SuperList["Gender"].keys, ["M","F"]
+    assert_equal SuperList["Gender"].values, ["Man", "Female"]
+    assert_equal SuperList["Gender1"].values(:locale => 'zh'),
+      ["translation missing: zh.Gender1.M", "translation missing: zh.Gender1.F"]
   end
 
   test "only valid when included" do
