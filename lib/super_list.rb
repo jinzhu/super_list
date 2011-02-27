@@ -47,10 +47,13 @@ module SuperListActiveRecord
 
       validates_inclusion_of original_column, { :in => data.values.keys }.merge(options)
 
-      define_method "#{column}" do
+      define_method "#{column}" do |*opt|
+        opt = opt[0].is_a?(Hash) ? opt[0] : {}
+        opt = options.merge(opt)
+
         key = attributes[column.to_s]
-        if options[:use_i18n]
-          I18n.t(key, :scope => options[:i18n_scope], :default => options[:i18n_default])
+        if opt[:use_i18n]
+          I18n.t(key, :scope => opt[:i18n_scope], :default => opt[:i18n_default], :locale => opt[:i18n_locale])
         else
           data.values[key]
         end

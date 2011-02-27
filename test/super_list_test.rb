@@ -22,6 +22,7 @@ class SuperListTest < ActiveSupport::TestCase
   test "SuperList gender (use i18n, no default translation)" do
     u = Factory(:user, :gender1 => 'F')
     assert_equal u.gender1, "translation missing: en.Gender.F"
+    assert_equal u.gender1(:i18n_locale => 'new_locale'), "translation missing: new_locale.Gender.F"
   end
 
   test "SuperList gender (use i18n wtih default translation)" do
