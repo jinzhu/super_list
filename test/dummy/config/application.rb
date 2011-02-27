@@ -1,12 +1,14 @@
 require File.expand_path('../boot', __FILE__)
 
+require 'rails/all'
+
 require "active_model/railtie"
 require "active_record/railtie"
 require "action_controller/railtie"
 require "action_view/railtie"
 require "action_mailer/railtie"
 
-Bundler.require
+Bundler.require(:default, Rails.env) if defined?(Bundler)
 require "super_list"
 
 module Dummy

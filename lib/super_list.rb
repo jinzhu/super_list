@@ -43,3 +43,17 @@ class SuperList
     end
   end
 end
+
+
+module SuperListActiveRecord
+  extend ActiveSupport::Concern
+
+  module ClassMethods
+    def super_list(column, data, options={})
+      data = SuperList[data]
+      validates_inclusion_of column, { :in => data.values.keys }.merge(data.options.merge(options))
+    end
+  end
+end
+
+ActiveRecord::Base.send :include, SuperListActiveRecord
