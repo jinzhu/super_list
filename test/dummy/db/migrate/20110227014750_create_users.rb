@@ -3,6 +3,7 @@ class CreateUsers < ActiveRecord::Migration
     create_table :users do |t|
       t.string :gender
       t.string :gender1
+      t.string :gender2
 
       t.timestamps
     end

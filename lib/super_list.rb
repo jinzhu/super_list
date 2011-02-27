@@ -2,26 +2,17 @@ require 'rubygems'
 require 'active_support'
 
 class SuperList
-  @@options = { :use_i18n => true, :namespace => 'super_list' }
+  @@options = { :use_i18n => false}
   @@data = ActiveSupport::OrderedHash.new
-
-  # I18n
-  # SuperList.new("Gender", {"M" => "Man", "F" => "Female"}, :allow_blank => true)
-  # super_list :gender, 'Gender'
-  #
-  # self.available_gender = ["M", "F"]
-  # self.gender => 'Man'
-  def self.default_option
-    @@options
-  end
 
   def self.default_option=(options)
     @@options.update(options)
   end
 
   def initialize(name, values, options={})
-    @options = self.class.default_option.merge(options)
-    @@data[name] = Data.new(values, @options)
+    # { :use_i18n => false, :i18n_scope => 'super_list'}
+    options = @@options.merge(:i18n_scope => name).merge(options)
+    @@data[name] = Data.new(values, options)
   end
 
   def self.[](name)
@@ -50,8 +41,24 @@ module SuperListActiveRecord
 
   module ClassMethods
     def super_list(column, data, options={})
+      original_column = "original_#{column}".to_sym
       data = SuperList[data]
-      validates_inclusion_of column, { :in => data.values.keys }.merge(data.options.merge(options))
+      options = data.options.merge(options)
+
+      validates_inclusion_of original_column, { :in => data.values.keys }.merge(options)
+
+      define_method "#{column}" do
+        key = attributes[column.to_s]
+        if options[:use_i18n]
+          I18n.t(key, :scope => options[:i18n_scope], :default => options[:i18n_default])
+        else
+          data.values[key]
+        end
+      end
+
+      define_method original_column do
+        attributes[column.to_s]
+      end
     end
   end
 end
