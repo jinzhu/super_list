@@ -1,3 +1,4 @@
 *.sqlite3
 *.log
+*gem
 test/dummy/db/schema.rb
