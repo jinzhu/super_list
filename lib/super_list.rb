@@ -35,11 +35,14 @@ class SuperList
 
     def get_value(key,options={})
       options = @options.merge(options)
-      if options[:use_i18n]
-        I18n.t(key, :scope => options[:i18n_scope], :default => options[:i18n_default], :locale => options[:locale])
-      else
-        @values[key]
-      end
+      key = @values[key]
+
+      return I18n.t(key, :scope => options[:i18n_scope], :default => options[:i18n_default], :locale => options[:locale]) if options[:use_i18n]
+      key
+    end
+
+    def get_key(value,options={})
+      keys[values(options).index(value)] rescue nil
     end
 
     def options

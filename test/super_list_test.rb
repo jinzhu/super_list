@@ -5,7 +5,11 @@ class SuperListTest < ActiveSupport::TestCase
     assert_equal SuperList["Gender"].keys, ["M","F"]
     assert_equal SuperList["Gender"].values, ["Man", "Female"]
     assert_equal SuperList["Gender1"].values(:locale => 'zh'),
-      ["translation missing: zh.Gender1.M", "translation missing: zh.Gender1.F"]
+      ["translation missing: zh.Gender1.Man", "translation missing: zh.Gender1.Female"]
+
+		assert_equal SuperList["Gender"].get_value("M"), "Man"
+		assert_equal SuperList["Gender"].get_key("Man"), "M"
+		assert_equal SuperList["Gender1"].get_key("translation missing: en.Gender1.Female"), "F"
   end
 
   test "only valid when included" do
@@ -28,8 +32,8 @@ class SuperListTest < ActiveSupport::TestCase
 
   test "SuperList gender (use i18n, no default translation)" do
     u = Factory(:user, :gender1 => 'F')
-    assert_equal u.gender1, "translation missing: en.Gender.F"
-    assert_equal u.gender1(:locale => 'new_locale'), "translation missing: new_locale.Gender.F"
+    assert_equal u.gender1, "translation missing: en.Gender.Female"
+    assert_equal u.gender1(:locale => 'new_locale'), "translation missing: new_locale.Gender.Female"
   end
 
   test "SuperList gender (use i18n wtih default translation)" do

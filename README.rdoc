@@ -15,13 +15,13 @@
   User.new(:gender => 'F').original_gender   => 'F'
 
   user = User.new(:gender => 'F', :gender2   => 'M')
-  user.gender2                               => "translation missing: en.Gender.M"
-  user.gender2(:locale => "api")             => "translation missing: api.Gender.M"
+  user.gender2                               => "translation missing: en.Gender.Man"
+  user.gender2(:locale => "api")             => "translation missing: api.Gender.Man"
 
   SuperList["Gender"].options                => {:use_i18n=>false, :i18n_scope=>"Gender", :allow_blank=>true}
   SuperList["Gender"].keys                   => ["M", "F"]
   SuperList["Gender"].values(:use_i18n => true, :locale => 'zh')
-                                             => ["translation missing: zh.Gender1.M", "translation missing: zh.Gender1.F"]
+                                             => ["translation missing: zh.Gender1.Man", "translation missing: zh.Gender1.Female"]
 
 
 == Contributing to super_list
