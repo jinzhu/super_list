@@ -1,7 +1,8 @@
 = Super List  - https://github.com/jinzhu/super_list
 
   ## in config/initializers/super_list.rb
-  SuperList.new("Gender", {"M" => "Man", "F" => "Female"}, :allow_blank => true, :use_i18n => false)
+  SuperList.new("Gender", {"M" => {:default => "Man", :amos => "M1"}, "F" => {:default => "Female", :amos => "M2"}}, :allow_blank => true)
+  SuperList.new("Gender2", {"M" => "Man", "F" => "Female"}, :allow_blank => true, :use_i18n => false)
 
   ## in app/models/user.rb
   class User < ActiveRecord::Base
@@ -9,14 +10,15 @@
     super_list :gender2, 'Gender', :use_i18n => true
   end
 
-  User.new(:gender => 'NF').valid?           => false
-  User.new(:gender => 'M').valid?            => true
-  User.new(:gender => 'F').gender            => 'Female'
-  User.new(:gender => 'F').original_gender   => 'F'
+  User.new(:gender => 'NF').valid?            => false
+  User.new(:gender => 'M').valid?             => true
+  User.new(:gender => 'F').gender.to_s        => 'Female'
+  User.new(:gender => 'F').gender.to_s(:amos) => 'M2'
+  User.new(:gender => 'F').original_gender    => 'F'
 
-  user = User.new(:gender => 'F', :gender2   => 'M')
-  user.gender2                               => "translation missing: en.Gender.Man"
-  user.gender2(:locale => "api")             => "translation missing: api.Gender.Man"
+  user = User.new(:gender => 'F', :gender2 => 'M')
+  user.gender2.to_s                          => "translation missing: en.Gender.Man"
+  user.gender2(:locale => "api").to_s        => "translation missing: api.Gender.Man"
 
   SuperList["Gender"].options                => {:use_i18n=>false, :i18n_scope=>"Gender", :allow_blank=>true}
   SuperList["Gender"].keys                   => ["M", "F"]
