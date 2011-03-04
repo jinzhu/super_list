@@ -19,6 +19,20 @@ class SuperList
     @@data[name]
   end
 
+  class List
+    def initialize(data, options)
+      @data, @options = data, options
+    end
+
+    def to_s(type=:default, options={})
+      options = options.merge(@options)
+      key = @data[type] || @data[:default]
+
+      return I18n.t(key, :scope => options[:i18n_scope], :default => options[:i18n_default], :locale => options[:locale]) if options[:use_i18n]
+      key
+    end
+  end
+
   ## Data Store
   class Data
     def initialize(values, options)
@@ -29,16 +43,16 @@ class SuperList
       @values.keys
     end
 
-    def values(options={})
-      keys.map {|x| get_value(x, options) }
+    def values(type=:default, options={})
+      options, type = type, :default if type.is_a?(Hash)
+      keys.map {|x| get_value(x, options).to_s(type) }
     end
 
     def get_value(key,options={})
       options = @options.merge(options)
-      key = @values[key]
-
-      return I18n.t(key, :scope => options[:i18n_scope], :default => options[:i18n_default], :locale => options[:locale]) if options[:use_i18n]
-      key
+      value = @values[key]
+      value = value.is_a?(Hash) ? value : {:default => value}
+      List.new(value, options)
     end
 
     def get_key(value,options={})
