@@ -20,10 +20,17 @@
   user.gender2.to_s                          => "translation missing: en.Gender.Man"
   user.gender2(:locale => "api").to_s        => "translation missing: api.Gender.Man"
 
+  SuperList["Gender"].get_value("M").to_s, "Man"
+  SuperList["Gender"].get_key("Man"), "M"
+  SuperList["Gender1"].get_key("translation missing: en.Gender1.Female"), "F"
   SuperList["Gender"].options                => {:use_i18n=>false, :i18n_scope=>"Gender", :allow_blank=>true}
   SuperList["Gender"].keys                   => ["M", "F"]
   SuperList["Gender"].values(:use_i18n => true, :locale => 'zh')
                                              => ["translation missing: zh.Gender1.Man", "translation missing: zh.Gender1.Female"]
+  assert_equal ["M","F"], SuperList["Gender"].map {|k,v| k }
+  assert_equal ["Man", "Female"], SuperList["Gender"].map {|k,v| v }
+
+== Please refer {test file}[https://github.com/jinzhu/super_list/blob/master/test/super_list_test.rb] for more examples.
 
 
 == Contributing to super_list
