@@ -10,6 +10,8 @@ class SuperListTest < ActiveSupport::TestCase
 		assert_equal SuperList["Gender"].get_value("M").to_s, "Man"
 		assert_equal SuperList["Gender"].get_key("Man"), "M"
 		assert_equal SuperList["Gender1"].get_key("translation missing: en.Gender1.Female"), "F"
+    assert_equal ["M","F"], SuperList["Gender"].map {|k,v| k }
+    assert_equal ["Man", "Female"], SuperList["Gender"].map {|k,v| v }
   end
 
   test "only valid when included" do

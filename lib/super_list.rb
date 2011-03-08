@@ -48,6 +48,10 @@ class SuperList
       keys.map {|x| get_value(x, options).to_s(type) }
     end
 
+    def map(type=:default, options={}, &blk)
+      keys.zip(values(type,options)).map &blk
+    end
+
     def get_value(key,options={})
       options = @options.merge(options)
       value = @values[key]
