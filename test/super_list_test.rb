@@ -17,14 +17,22 @@ class SuperListTest < ActiveSupport::TestCase
   test "only valid when included" do
     ## gender allow_blank => true
     assert Factory.build(:user).valid?
-    assert !Factory.build(:user, :gender => 'A').valid?
-    assert !Factory.build(:user, :gender => 'MF').valid?
+    assert Factory.build(:user, :gender => 'A').invalid?
+    assert Factory.build(:user, :gender => 'MF').invalid?
     assert Factory.build(:user, :gender => 'M').valid?
     assert Factory.build(:user, :gender => 'F').valid?
 
     ## gender1 allow_blank => false
     assert Factory.build(:user, :gender1 => 'M').valid?
-    assert !Factory.build(:user, :gender1 => '').valid?
+    assert Factory.build(:user, :gender1 => '').invalid?
+  end
+
+  test "set value" do
+    user = Factory.build(:user, :gender => 'Man')
+    assert user.valid?
+    assert_equal user.gender.to_s(:amos), 'M1'
+    user = Factory.build(:user, :gender => 'NoValue')
+    assert user.invalid?
   end
 
   test "no validations for gender2" do

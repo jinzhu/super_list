@@ -10,11 +10,15 @@
     super_list :gender2, 'Gender', :use_i18n => true
   end
 
-  User.new(:gender => 'NF').valid?            => false
-  User.new(:gender => 'M').valid?             => true
-  User.new(:gender => 'F').gender.to_s        => 'Female'
-  User.new(:gender => 'F').gender.to_s(:amos) => 'M2'
-  User.new(:gender => 'F').original_gender    => 'F'
+  User.new(:gender => 'NF').valid?              => false
+  User.new(:gender => 'M').valid?               => true
+  User.new(:gender => 'F').gender.to_s          => 'Female'
+  User.new(:gender => 'F').gender.to_s(:amos)   => 'M2'
+  User.new(:gender => 'F').original_gender      => 'F'
+
+  User.new(:gender => 'Man').valid?             => true
+  User.new(:gender => 'Man').original_gender    => 'M'
+  User.new(:gender => 'Man').gender.to_s(:amos) => 'M1'
 
   user = User.new(:gender => 'F', :gender2 => 'M')
   user.gender2.to_s                          => "translation missing: en.Gender.Man"

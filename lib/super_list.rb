@@ -79,8 +79,20 @@ module SuperListActiveRecord
       data = SuperList[data]
       options = data.options.merge(options)
 
-      unless options[:no_validation]
-        validates_inclusion_of original_column, { :in => data.keys }.merge(options)
+      before_validation do
+        value = attributes[column.to_s]
+        keys = data.keys
+
+        if !keys.include?(value)
+          index = data.values.find_index(value)
+
+          if index
+            self.send("#{column}=", keys[index])
+          elsif !options[:no_validation]
+            self.errors.add(column, I18n.t('errors.messages.inclusion'))
+            return false
+          end
+        end
       end
 
       define_method "#{column}" do |*opt|
