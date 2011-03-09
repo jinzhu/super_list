@@ -79,7 +79,9 @@ module SuperListActiveRecord
       data = SuperList[data]
       options = data.options.merge(options)
 
-      validates_inclusion_of original_column, { :in => data.keys }.merge(options)
+      unless options[:no_validation]
+        validates_inclusion_of original_column, { :in => data.keys }.merge(options)
+      end
 
       define_method "#{column}" do |*opt|
         opt = opt[0].is_a?(Hash) ? opt[0] : {}

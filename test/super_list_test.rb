@@ -27,6 +27,11 @@ class SuperListTest < ActiveSupport::TestCase
     assert !Factory.build(:user, :gender1 => '').valid?
   end
 
+  test "no validations for gender2" do
+    assert Factory.build(:user, :gender3 => 'A').valid?
+    assert Factory.build(:user, :gender3 => 'M').valid?
+  end
+
   test "SuperList gender (don't use i18n)" do
     u = Factory(:user, :gender => 'F')
     assert_equal u.gender.to_s, 'Female'
