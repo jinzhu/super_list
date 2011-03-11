@@ -2,35 +2,24 @@ require 'rubygems'
 require 'active_support'
 
 class SuperList
-  @@options = { :use_i18n => false}
+  @@options = { :use_i18n => false, :format => :default}
   @@data = ActiveSupport::OrderedHash.new
 
-  def self.default_option=(options)
+  def self.options=(options)
     @@options.update(options)
   end
 
+  def self.options
+    @@options
+  end
+
   def initialize(name, values, options={})
-    # { :use_i18n => false, :i18n_scope => 'super_list'}
-    options = @@options.merge(:i18n_scope => name).merge(options)
+    options = { :i18n_scope => name}.merge(options)
     @@data[name] = Data.new(values, options)
   end
 
   def self.[](name)
     @@data[name]
-  end
-
-  class List
-    def initialize(data, options)
-      @data, @options = data, options
-    end
-
-    def to_s(type=:default, options={})
-      options = options.merge(@options)
-      key = @data[type] || @data[:default]
-
-      return I18n.t(key, :scope => options[:i18n_scope], :default => options[:i18n_default], :locale => options[:locale]) if options[:use_i18n]
-      key
-    end
   end
 
   ## Data Store
@@ -43,32 +32,36 @@ class SuperList
       @values.keys
     end
 
-    def values(type=:default, options={})
-      options, type = type, :default if type.is_a?(Hash)
-      keys.map {|x| get_value(x, options).to_s(type) }
+    def values(format=nil, opts={})
+      opts, format = format, nil if format.is_a?(Hash)
+      keys.map {|key| get_value(key, format, opts) }
     end
 
-    def map(type=:default, options={}, &blk)
-      keys.zip(values(type,options)).map &blk
-    end
+    def get_value(key, format=nil, opts={})
+      opts = options.merge(opts)
 
-    def select_options(type=:default, options={}, &blk)
-      values(type,options).zip(keys).map &blk
-    end
-
-    def get_value(key,options={})
-      options = @options.merge(options)
       value = @values[key]
-      value = value.is_a?(Hash) ? value : {:default => value}
-      List.new(value, options)
+      format = format || opts[:format]
+      result = value.is_a?(Hash) ? value[format] : value
+
+      return I18n.t(result, :scope => opts[:i18n_scope], :default => opts[:i18n_default], :locale => opts[:locale]) if opts[:use_i18n]
+      result
     end
 
-    def get_key(value,options={})
-      keys[values(options).index(value)] rescue nil
+    def get_key(value, opts={})
+      keys[values(opts).index(value)] rescue nil
+    end
+
+    def map(format=nil, opts={}, &blk)
+      keys.zip(values(format, opts)).map &blk
+    end
+
+    def select_options(format=nil, opts={}, &blk)
+      values(format, opts).zip(keys).map &blk
     end
 
     def options
-      @options
+      SuperList.options.merge(@options)
     end
   end
 end
@@ -79,13 +72,12 @@ module SuperListActiveRecord
 
   module ClassMethods
     def super_list(column, data, options={})
-      original_column = "original_#{column}".to_sym
       data = SuperList[data]
       options = data.options.merge(options)
 
       before_validation do
         value = attributes[column.to_s]
-        keys = data.keys
+        keys  = data.keys
 
         if !keys.include?(value)
           index = data.values.find_index(value)
@@ -99,15 +91,15 @@ module SuperListActiveRecord
         end
       end
 
-      define_method "#{column}" do |*opt|
-        opt = opt[0].is_a?(Hash) ? opt[0] : {}
-        opt = options.merge(opt)
-
-        data.get_value(attributes[column.to_s], opt)
-      end
-
-      define_method original_column do
-        attributes[column.to_s]
+      define_method "#{column}" do |*opts|
+        key = attributes[column.to_s]
+        if opts.blank?
+          key
+        else
+          format = opts[0].is_a?(Symbol) ? opts[0] : nil
+          opts   = opts[1].is_a?(Hash) ? opts[1] : (opts[0].is_a?(Hash) ? opts[0] : {})
+          data.get_value(key, format, options.merge(opts))
+        end
       end
     end
   end

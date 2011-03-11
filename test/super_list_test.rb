@@ -34,7 +34,7 @@ class SuperListTest < ActiveSupport::TestCase
   test "set value" do
     user = Factory.build(:user, :gender => 'Man')
     assert user.valid?
-    assert_equal user.gender.to_s(:amos), 'M1'
+    assert_equal user.gender(:amos), 'M1'
     user = Factory.build(:user, :gender => 'NoValue')
     assert user.invalid?
   end
@@ -46,20 +46,21 @@ class SuperListTest < ActiveSupport::TestCase
 
   test "SuperList gender (don't use i18n)" do
     u = Factory(:user, :gender => 'F')
-    assert_equal u.gender.to_s, 'Female'
-    assert_equal u.gender.to_s(:amos), 'M2'
+    assert_equal u.gender, 'F'
+    assert_equal u.gender(:default), 'Female'
+    assert_equal u.gender(:amos), 'M2'
   end
 
   test "SuperList gender (use i18n, no default translation)" do
     u = Factory(:user, :gender1 => 'F')
-    assert_equal u.gender1.to_s, "translation missing: en.Gender.Female"
-    assert_equal u.gender1(:locale => 'new_locale').to_s, "translation missing: new_locale.Gender.Female"
-    assert_equal u.gender1(:locale => 'new_locale').to_s(:amos), "translation missing: new_locale.Gender.M2"
+    assert_equal u.gender1(:default), "translation missing: en.Gender.Female"
+    assert_equal u.gender1(:default, :locale => 'new_locale'), "translation missing: new_locale.Gender.Female"
+    assert_equal u.gender1(:amos, :locale => 'new_locale'), "translation missing: new_locale.Gender.M2"
   end
 
   test "SuperList gender (use i18n wtih default translation)" do
     u = Factory(:user, :gender2 => 'F')
-    assert_equal u.gender2.to_s, "未知"
-    assert_equal u.gender2.to_s(:nokey), "未知"
+    assert_equal u.gender2, "F"
+    assert_equal u.gender2(:nokey), "未知"
   end
 end
