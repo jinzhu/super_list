@@ -63,4 +63,13 @@ class SuperListTest < ActiveSupport::TestCase
     assert_equal u.gender2, "F"
     assert_equal u.gender2(:nokey), "未知"
   end
+
+  test "global options" do
+    user = Factory(:user, :gender => 'Man')
+    SuperList.options = {:format => :amos}
+    assert_equal user.gender, 'M1'
+    SuperList.options = {:format => :default}
+    assert_equal user.gender, 'Man'
+    SuperList.options = {}
+  end
 end

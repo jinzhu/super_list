@@ -2,15 +2,15 @@ require 'rubygems'
 require 'active_support'
 
 class SuperList
-  @@options = { :use_i18n => false, :format => :default}
+  @@options = { :use_i18n => false}
   @@data = ActiveSupport::OrderedHash.new
 
   def self.options=(options)
-    @@options.update(options)
+    Thread.current[:super_list_options] = @@options.merge(options)
   end
 
   def self.options
-    @@options
+    Thread.current[:super_list_options] || @@options
   end
 
   def initialize(name, values, options={})
@@ -41,7 +41,7 @@ class SuperList
       opts = options.merge(opts)
 
       value = @values[key]
-      format = format || opts[:format]
+      format = format || opts[:format] || :default
       result = value.is_a?(Hash) ? value[format] : value
 
       return I18n.t(result, :scope => opts[:i18n_scope], :default => opts[:i18n_default], :locale => opts[:locale]) if opts[:use_i18n]
@@ -81,7 +81,6 @@ module SuperListActiveRecord
 
         if !keys.include?(value)
           index = data.values.find_index(value)
-
           if index
             self.send("#{column}=", keys[index])
           elsif !options[:no_validation]
@@ -89,11 +88,12 @@ module SuperListActiveRecord
             return false
           end
         end
+        return true
       end
 
       define_method "#{column}" do |*opts|
         key = attributes[column.to_s]
-        if opts.blank?
+        if opts.blank? && SuperList.options[:format].blank?
           key
         else
           format = opts[0].is_a?(Symbol) ? opts[0] : nil
