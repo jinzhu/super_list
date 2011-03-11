@@ -12,27 +12,32 @@
 
   User.new(:gender => 'NF').valid?              => false
   User.new(:gender => 'M').valid?               => true
-  User.new(:gender => 'F').gender.to_s          => 'Female'
-  User.new(:gender => 'F').gender.to_s(:amos)   => 'M2'
-  User.new(:gender => 'F').original_gender      => 'F'
+  User.new(:gender => 'F').gender(:default)     => 'Female'
+  User.new(:gender => 'F').gender(:amos)        => 'M2'
+  User.new(:gender => 'F').gender               => 'F'
 
   User.new(:gender => 'Man').valid?             => true
-  User.new(:gender => 'Man').original_gender    => 'M'
-  User.new(:gender => 'Man').gender.to_s(:amos) => 'M1'
+  User.new(:gender => 'Man').gender             => 'M'
+  User.new(:gender => 'Man').gender(:amos)      => 'M1'
 
   user = User.new(:gender => 'F', :gender2 => 'M')
-  user.gender2.to_s                          => "translation missing: en.Gender.Man"
-  user.gender2(:locale => "api").to_s        => "translation missing: api.Gender.Man"
+  user.gender2(:default)                     => "translation missing: en.Gender.Man"
+  user.gender2(:locale => "api")             => "translation missing: api.Gender.Man"
 
-  SuperList["Gender"].get_value("M").to_s, "Man"
-  SuperList["Gender"].get_key("Man"), "M"
-  SuperList["Gender1"].get_key("translation missing: en.Gender1.Female"), "F"
-  SuperList["Gender"].options                => {:use_i18n=>false, :i18n_scope=>"Gender", :allow_blank=>true}
-  SuperList["Gender"].keys                   => ["M", "F"]
+  SuperList["Gender"].get_value("M").to_s    => "Man"
+  SuperList["Gender"].get_key("Man")         =>  "M"
+  SuperList["Gender1"].get_key("translation missing: en.Gender1.Female") => "F"
+  SuperList["Gender"].options               => {:use_i18n=>false, :i18n_scope=>"Gender", :allow_blank=>true}
+  SuperList["Gender"].keys                  => ["M", "F"]
   SuperList["Gender"].values(:use_i18n => true, :locale => 'zh')
-                                             => ["translation missing: zh.Gender1.Man", "translation missing: zh.Gender1.Female"]
+                                            => ["translation missing: zh.Gender1.Man", "translation missing: zh.Gender1.Female"]
+
   assert_equal ["M","F"], SuperList["Gender"].map {|k,v| k }
   assert_equal ["Man", "Female"], SuperList["Gender"].map {|k,v| v }
+
+  assert_equal ["M","F"], SuperList["Gender"].select_options {|k,v| v }
+  assert_equal ["Man", "Female"], SuperList["Gender"].select_options {|k,v| k }
+
 
 == Please refer {test file}[https://github.com/jinzhu/super_list/blob/master/test/super_list_test.rb] for more examples.
 
