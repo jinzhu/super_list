@@ -52,6 +52,10 @@ class SuperList
       keys.zip(values(type,options)).map &blk
     end
 
+    def select_options(type=:default, options={}, &blk)
+      values(type,options).zip(keys).map &blk
+    end
+
     def get_value(key,options={})
       options = @options.merge(options)
       value = @values[key]
