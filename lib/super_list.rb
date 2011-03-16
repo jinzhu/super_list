@@ -83,6 +83,8 @@ module SuperListActiveRecord
           index = data.values.find_index(value)
           if index
             self.send("#{column}=", keys[index])
+          elsif options[:allow_blank] && value.blank?
+            # do nothing
           elsif !options[:no_validation]
             self.errors.add(column, I18n.t('errors.messages.inclusion'))
             return false
