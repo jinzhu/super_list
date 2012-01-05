@@ -4,14 +4,14 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{super_list}
-  s.version = "1.0.0"
+  s.name = "super_list"
+  s.version = "1.4.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jinzhu"]
-  s.date = %q{2011-02-27}
-  s.description = %q{super list}
-  s.email = %q{wosmvp@gmail.com}
+  s.date = "2012-01-05"
+  s.description = "super list"
+  s.email = "wosmvp@gmail.com"
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.rdoc"
@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
     "LICENSE.txt",
     "README.rdoc",
     "Rakefile",
+    "VERSION",
     "lib/super_list.rb",
     "super_list.gemspec",
     "test/dummy/Rakefile",
@@ -67,11 +68,11 @@ Gem::Specification.new do |s|
     "test/support/integration_case.rb",
     "test/test_helper.rb"
   ]
-  s.homepage = %q{http://github.com/jinzhu/super_list}
+  s.homepage = "http://github.com/jinzhu/super_list"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.4.2}
-  s.summary = %q{super list}
+  s.rubygems_version = "1.8.10"
+  s.summary = "super list"
   s.test_files = [
     "test/dummy/app/controllers/application_controller.rb",
     "test/dummy/app/helpers/application_helper.rb",
@@ -104,27 +105,18 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.2"])
-      s.add_development_dependency(%q<rcov>, [">= 0"])
-      s.add_development_dependency(%q<sqlite3-ruby>, [">= 0"])
-      s.add_development_dependency(%q<rails>, ["= 3.0.4"])
-      s.add_development_dependency(%q<capybara>, [">= 0.4.0"])
+      s.add_development_dependency(%q<rails>, ["= 3.1.3"])
       s.add_development_dependency(%q<factory_girl>, [">= 0"])
     else
       s.add_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
-      s.add_dependency(%q<rcov>, [">= 0"])
-      s.add_dependency(%q<sqlite3-ruby>, [">= 0"])
-      s.add_dependency(%q<rails>, ["= 3.0.4"])
-      s.add_dependency(%q<capybara>, [">= 0.4.0"])
+      s.add_dependency(%q<rails>, ["= 3.1.3"])
       s.add_dependency(%q<factory_girl>, [">= 0"])
     end
   else
     s.add_dependency(%q<bundler>, ["~> 1.0.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
-    s.add_dependency(%q<rcov>, [">= 0"])
-    s.add_dependency(%q<sqlite3-ruby>, [">= 0"])
-    s.add_dependency(%q<rails>, ["= 3.0.4"])
-    s.add_dependency(%q<capybara>, [">= 0.4.0"])
+    s.add_dependency(%q<rails>, ["= 3.1.3"])
     s.add_dependency(%q<factory_girl>, [">= 0"])
   end
 end
