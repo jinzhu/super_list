@@ -53,11 +53,19 @@ class SuperList
     end
 
     def map(format=nil, opts={}, &blk)
-      keys.zip(values(format, opts)).map &blk
+      if block_given?
+        keys.zip(values(format, opts)).map &blk
+      else
+        keys.zip(values(format, opts))
+      end
     end
 
     def select_options(format=nil, opts={}, &blk)
-      values(format, opts).zip(keys).map &blk
+      if block_given?
+        values(format, opts).zip(keys).map &blk
+      else
+        values(format, opts).zip(keys)
+      end
     end
 
     def options
