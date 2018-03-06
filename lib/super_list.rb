@@ -54,7 +54,7 @@ class SuperList
 
     def map(format=nil, opts={}, &blk)
       if block_given?
-        keys.zip(values(format, opts)).map &blk
+        keys.zip(values(format, opts)).map(&blk)
       else
         keys.zip(values(format, opts))
       end
@@ -62,7 +62,7 @@ class SuperList
 
     def select_options(format=nil, opts={}, &blk)
       if block_given?
-        values(format, opts).zip(keys).map &blk
+        values(format, opts).zip(keys).map(&blk)
       else
         values(format, opts).zip(keys)
       end
